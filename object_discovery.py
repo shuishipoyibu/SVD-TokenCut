@@ -9,7 +9,7 @@ import numpy as np
 from scipy.linalg import eigh
 from scipy import ndimage
 
-def ncut(feats, dims, scales, init_image_size, tau = 0, eps=1e-5, im_name='', no_binary_graph=False):
+def ncut(feats, dims, scales, init_image_size, tau = 0, eps=1e-5, im_name='', no_binary_graph=False, return_diagnostics=False):
     """
     Implementation of NCut Method.
     Inputs
@@ -26,9 +26,10 @@ def ncut(feats, dims, scales, init_image_size, tau = 0, eps=1e-5, im_name='', no
 
     feats = feats[0,1:,:]
     feats = F.normalize(feats, p=2)
-    A = (feats @ feats.transpose(1,0)) 
-    A = A.cpu().numpy()
+    similarity = feats @ feats.transpose(1,0)
+    A = similarity.cpu().numpy()
     if no_binary_graph:
+        A = A.copy()
         A[A<tau] = eps
     else:
         A = A > tau
@@ -37,7 +38,7 @@ def ncut(feats, dims, scales, init_image_size, tau = 0, eps=1e-5, im_name='', no
     D = np.diag(d_i)
   
     # Print second and third smallest eigenvector 
-    _, eigenvectors = eigh(D-A, D, subset_by_index=[1,2])
+    eigenvalues, eigenvectors = eigh(D-A, D, subset_by_index=[1,2])
     eigenvec = np.copy(eigenvectors[:, 0])
 
     # Using average point to compute bipartition 
@@ -57,7 +58,16 @@ def ncut(feats, dims, scales, init_image_size, tau = 0, eps=1e-5, im_name='', no
     mask = np.zeros(dims)
     mask[cc[0],cc[1]] = 1
 
-    return np.asarray(pred), objects, mask, seed, None, eigenvec.reshape(dims)
+    result = np.asarray(pred), objects, mask, seed, None, eigenvec.reshape(dims)
+    if return_diagnostics:
+        diagnostics = {
+            "similarity": similarity,
+            "lambda2": eigenvalues[0],
+            "lambda3": eigenvalues[1],
+            "spectral_gap": eigenvalues[1] - eigenvalues[0],
+        }
+        return (*result, diagnostics)
+    return result
 
 def detect_box(bipartition, seed,  dims, initial_im_size=None, scales=None, principle_object=True):
     """

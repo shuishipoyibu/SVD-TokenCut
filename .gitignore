@@ -1,0 +1,73 @@
+# Experiment outputs and cached features
+/outputs/
+/feature_cache/
+/features/
+/checkpoints/
+/weights/
+*.npy
+*.npz
+*.pkl
+
+# Downloaded datasets (retain scripts and repository metadata in datasets/)
+/datasets/VOC2007/VOCdevkit/
+/datasets/VOC2012/VOCdevkit/
+/datasets/COCO/images/
+/datasets/COCO/annotations/
+/datasets/CUB/CUB_200_2011/
+/datasets/ImageNet/ILSVRC/
+/datasets/ECSSD/img/
+/datasets/ECSSD/gt/
+/datasets/DUTS_Test/img/
+/datasets/DUTS_Test/gt/
+/datasets/DUT-OMRON/img/
+/datasets/DUT-OMRON/gt/
+
+# Model weights and exported model artifacts
+*.pth
+*.pth.tar
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# Logs, experiment trackers, and runtime artifacts
+*.log
+/logs/
+/runs/
+/tensorboard/
+/wandb/
+/mlruns/
+
+# Python caches and test or coverage artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter and local virtual environments
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+ENV/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.local
+
+# IDE, operating-system, and temporary files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.tmpSystem.Text.UTF8Encoding

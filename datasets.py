@@ -72,14 +72,24 @@ class Dataset:
         elif dataset_name == "COCO20k":
             self.year = "2014"
             self.root_path = f"datasets/COCO/images/{dataset_set}{self.year}"
-            self.sel20k = 'datasets/coco_20k_filenames.txt'
-            # JSON file constructed based on COCO train2014 gt 
-            self.all_annfile = "datasets/COCO/annotations/instances_train2014.json"
-            self.annfile = "datasets/instances_train2014_sel20k.json"
-            self.sel_20k = get_sel_20k(self.sel20k)
-            if not os.path.exists(self.annfile):
-                select_coco_20k(self.sel20k, self.all_annfile)
-            self.train2014 = get_train2014(self.annfile)
+            if dataset_set == "train":
+                self.sel20k = "datasets/coco_20k_filenames.txt"
+                # JSON file constructed based on COCO train2014 gt
+                self.all_annfile = "datasets/COCO/annotations/instances_train2014.json"
+                self.annfile = "datasets/instances_train2014_sel20k.json"
+                if not os.path.exists(self.annfile):
+                    select_coco_20k(self.sel20k, self.all_annfile)
+            elif dataset_set == "val":
+                self.sel20k = None
+                self.all_annfile = None
+                self.annfile = "datasets/COCO/annotations/instances_val2014.json"
+            else:
+                raise ValueError("COCO20k supports --set train or --set val.")
+            self.coco_annotations = get_coco_annotations(self.annfile)
+            self.coco_image_id_to_file_name = {
+                image["id"]: image["file_name"]
+                for image in self.coco_annotations["images"]
+            }
         else:
             raise ValueError("Unknown dataset.")
 
@@ -112,30 +122,32 @@ class Dataset:
             self.hards = self.get_hards()
             print(f"Nb images discarded {len(self.hards)}")
 
-    def load_image(self, im_name):
+    def load_image(self, im_name, *args):
         """
         Load the image corresponding to the im_name
         """
         if "VOC" in self.dataset_name:
             image = skimage.io.imread(f"./datasets/VOC{self.year}/VOCdevkit/VOC{self.year}/JPEGImages/{im_name}")
         elif "COCO" in self.dataset_name:
-            #im_path = self.path_20k[self.sel_20k.index(im_name)]
-            #im_path = self.train2014['images'][self.sel_20k.index(im_name)]['file_name']
-            #image = skimage.io.imread(f"./datasets/COCO/images/train2014/{im_path}")
-            image = skimage.io.imread(f"./datasets/COCO/images/train2014/{im_name}")
+            image = skimage.io.imread(os.path.join(self.root_path, im_name))
         else:
             raise ValueError("Unkown dataset.")
         return image
 
-    def get_image_name(self, inp):
+    def get_image_name(self, inp, im_id=None):
         """
         Return the image name
         """
         if "VOC" in self.dataset_name:
             im_name = inp["annotation"]["filename"]
         elif "COCO" in self.dataset_name:
-            im_name = str(inp[0]["image_id"])
-            im_name = self.train2014['images'][self.sel_20k.index(im_name)]['file_name']
+            if im_id is not None:
+                image_id = self.dataloader.ids[im_id]
+            elif len(inp) > 0:
+                image_id = inp[0]["image_id"]
+            else:
+                return None
+            im_name = self.coco_image_id_to_file_name[image_id]
 
         return im_name
 
@@ -151,7 +163,7 @@ class Dataset:
         if "VOC" in self.dataset_name:
             cls_path = f"classes_{self.set}_{self.year}.txt"
         elif "COCO" in self.dataset_name:
-            cls_path = f"classes_{self.dataset}_{self.set}_{self.year}.txt"
+            cls_path = f"classes_{self.dataset_name}_{self.set}_{self.year}.txt"
 
         # Load if exists
         if os.path.exists(cls_path):
@@ -348,11 +360,11 @@ def get_sel_20k(sel_file):
     im20k = [str(int(s.split("_")[-1].split(".")[0])) for s in sel_20k]
     return im20k
 
-def get_train2014(all_annotations_file):
+def get_coco_annotations(all_annotations_file):
     # load all annotations
     with open(all_annotations_file, "r") as f:
-        train2014 = json.load(f)
-    return train2014
+        coco_annotations = json.load(f)
+    return coco_annotations
 
 
 

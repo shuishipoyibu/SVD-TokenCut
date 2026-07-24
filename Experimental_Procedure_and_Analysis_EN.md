@@ -1,20 +1,3 @@
-# SVD-Based Analysis of TokenCut
-
-This repository presents an experimental analysis of SVD-based dimensionality reduction for TokenCut. It is built on the official TokenCut implementation; the original baseline code, paper, and attribution remain the work of the TokenCut authors. The extensions in this repository include centered PCA, uncentered SVD, cosine SVD, graph-consistency metrics, and the accompanying experiments on VOC12 and COCO.
-## Upstream TokenCut Resources
-
-- Official TokenCut repository: [YangtaoWANG95/TokenCut](https://github.com/YangtaoWANG95/TokenCut)
-- Original paper: [Self-Supervised Transformers for Unsupervised Object Discovery Using Normalized Cut (CVPR 2022)](https://arxiv.org/abs/2202.11539)
-
-This project retains and extends the official TokenCut codebase. The upstream implementation, baseline pipeline, and original method remain attributable to the TokenCut authors.
-
-## Repository Guide
-
-- [SVD_TOKENCUT_COMMANDS.md](SVD_TOKENCUT_COMMANDS.md): the operational reference for the current modified `main_tokencut.py`. It documents baseline runs, feature caching, centered PCA, uncentered SVD, cosine SVD, random projection, parameters, output paths, and known limitations.
-- [DOWNLOAD_DATA.md](DOWNLOAD_DATA.md): dataset and DINO-checkpoint download instructions, together with the expected directory layouts.
-- [TOKENCUT_ORIGINAL_README.md](TOKENCUT_ORIGINAL_README.md): the original TokenCut README retained for the upstream installation, inference, evaluation, and citation instructions.
-- [Experimental_Procedure_and_Analysis_EN.md](Experimental_Procedure_and_Analysis_EN.md): a standalone copy of the full English experimental report reproduced below.
-The complete English report follows. Its body is retained unchanged so that this README serves both as the project entry point and as the full research record.
 # Investigating Whether SVD-Based Dimensionality Reduction Improves TokenCut Segmentation Accuracy
 
 ## Introduction
