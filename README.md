@@ -48,24 +48,25 @@ Table 1. CorLoc on VOC12 at different retained dimensions (unit: %).
 The results show that accuracy after PCA-based dimensionality reduction is substantially lower than that obtained without dimensionality reduction, and that accuracy increases as more dimensions are retained. This finding suggests that full PCA may disrupt information on which TokenCut graph construction depends. One plausible explanation is that centering substantially changes the cosine similarities between tokens, which constitute an important basis for TokenCut segmentation.
 
 Let the original token features be $x_i$ and $x_j$, and let the mean of all tokens be
-\[
+$$
 \boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^{N}x_i.
-\]
+$$
 After centering, the token feature becomes $\tilde{x}_i=x_i-\boldsymbol{\mu}$. The cosine similarities computed from the original and centered features are, respectively,
-\[
+$$
 c_{ij}=\frac{x_i^{\mathsf T}x_j}{\lVert x_i\rVert_2\lVert x_j\rVert_2},
-\]
-\[
+$
+
+$
 \tilde{c}_{ij}
 =\frac{(x_i-\boldsymbol{\mu})^{\mathsf T}(x_j-\boldsymbol{\mu})}
 {\lVert x_i-\boldsymbol{\mu}\rVert_2\lVert x_j-\boldsymbol{\mu}\rVert_2}
 =\frac{x_i^{\mathsf T}x_j-\boldsymbol{\mu}^{\mathsf T}x_i-\boldsymbol{\mu}^{\mathsf T}x_j+\lVert\boldsymbol{\mu}\rVert_2^2}
 {\lVert x_i-\boldsymbol{\mu}\rVert_2\lVert x_j-\boldsymbol{\mu}\rVert_2}.
-\]
+$$
 Because centering changes both the numerator and the denominator and introduces additional terms such as $-\boldsymbol{\mu}^{\mathsf T}x_i$ and $-\boldsymbol{\mu}^{\mathsf T}x_j$, in general,
-\[
+$$
 \tilde{c}_{ij}\neq c_{ij}.
-\]
+$$
 Centering is therefore not a cosine-similarity-preserving transformation. When these similarities are used to construct the TokenCut graph, the edge structure of the original graph may change accordingly.
 
 To examine this hypothesis, two experimental conditions are established. In the first, the features are centered without dimensionality reduction before TokenCut is applied. In the second, SVD is applied directly without centering, followed by TokenCut.
@@ -89,15 +90,15 @@ Table 2. CorLoc of different methods on VOC12 (unit: %).
 Table 3. Mean relative cosine-graph error (`mean_relative_cosine_graph_error`; lower is better) of different methods on VOC12.
 
 The cosine error is calculated as follows. Let $C\in\mathbb{R}^{N\times N}$ denote the cosine-similarity matrix constructed from the original token features, and let $\hat{C}$ denote the cosine-similarity matrix constructed from the dimensionally reduced token features. The mean relative cosine-graph error is defined as
-\[
+$$
 E_{\mathrm{cos}}
 =\frac{\lVert\hat{C}-C\rVert_F}{\lVert C\rVert_F},
-\]
+$$
 where $\lVert\cdot\rVert_F$ denotes the Frobenius norm, namely, the square root of the sum of the squared matrix elements:
-\[
+$$
 \lVert A\rVert_F
 =\sqrt{\sum_{i=1}^{N}\sum_{j=1}^{N}A_{ij}^{\,2}}.
-\]
+$$
 Thus, this metric quantifies the relative discrepancy between the entire cosine-similarity matrices before and after dimensionality reduction, rather than the mean relative error of individual edges. For vanilla TokenCut without dimensionality reduction, $\hat{C}=C$ and therefore $E_{\mathrm{cos}}=0$.
 
 The accuracy obtained with centering alone is similar to that obtained with full PCA. By contrast, uncentered SVD yields slightly higher accuracy than direct TokenCut at several retained dimensions. Moreover, the relative cosine-graph error resulting from centering alone is substantially higher than that resulting from uncentered SVD, which is consistent with the hypothesis that centering changes the cosine-similarity information used by TokenCut. Under uncentered SVD, accuracy first increases and then decreases as the retained dimension grows. This trend indicates that preserving more information does not necessarily produce higher accuracy; on VOC12, moderate dimensionality reduction may help suppress information that is detrimental to segmentation.
