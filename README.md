@@ -54,9 +54,9 @@ $$
 After centering, the token feature becomes $\tilde{x}_i=x_i-\boldsymbol{\mu}$. The cosine similarities computed from the original and centered features are, respectively,
 $$
 c_{ij}=\frac{x_i^{\mathsf T}x_j}{\lVert x_i\rVert_2\lVert x_j\rVert_2},
-$
+$$
 
-$
+$$
 \tilde{c}_{ij}
 =\frac{(x_i-\boldsymbol{\mu})^{\mathsf T}(x_j-\boldsymbol{\mu})}
 {\lVert x_i-\boldsymbol{\mu}\rVert_2\lVert x_j-\boldsymbol{\mu}\rVert_2}
