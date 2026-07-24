@@ -89,17 +89,17 @@ Table 2. CorLoc of different methods on VOC12 (unit: %).
 
 Table 3. Mean relative cosine-graph error (`mean_relative_cosine_graph_error`; lower is better) of different methods on VOC12.
 
-The cosine error is calculated as follows. Let $C\in\mathbb{R}^{N\times N}$ denote the cosine-similarity matrix constructed from the original token features, and let $\hat{C}$ denote the cosine-similarity matrix constructed from the dimensionally reduced token features. The mean relative cosine-graph error is defined as
-$$
+The cosine error is calculated as follows. Let $`C\in\mathbb{R}^{N\times N}`$ denote the cosine-similarity matrix constructed from the original token features, and let $`\hat{C}`$ denote the cosine-similarity matrix constructed from the dimensionally reduced token features. The mean relative cosine-graph error is defined as
+```math
 E_{\mathrm{cos}}
 =\frac{\lVert\hat{C}-C\rVert_F}{\lVert C\rVert_F},
-$$
-where $\lVert\cdot\rVert_F$ denotes the Frobenius norm, namely, the square root of the sum of the squared matrix elements:
-$$
+```
+where $`\lVert\cdot\rVert_F`$ denotes the Frobenius norm, namely, the square root of the sum of the squared matrix elements:
+```math
 \lVert A\rVert_F
-=\sqrt{\sum_{i=1}^{N}\sum_{j=1}^{N}A_{ij}^{\,2}}.
-$$
-Thus, this metric quantifies the relative discrepancy between the entire cosine-similarity matrices before and after dimensionality reduction, rather than the mean relative error of individual edges. For vanilla TokenCut without dimensionality reduction, $\hat{C}=C$ and therefore $E_{\mathrm{cos}}=0$.
+=\sqrt{\sum_{i=1}^{N}\sum_{j=1}^{N}A_{ij}^{2}}.
+```
+Thus, this metric quantifies the relative discrepancy between the entire cosine-similarity matrices before and after dimensionality reduction, rather than the mean relative error of individual edges. For vanilla TokenCut without dimensionality reduction, $`\hat{C}=C`$ and therefore $`E_{\mathrm{cos}}=0`$.
 
 The accuracy obtained with centering alone is similar to that obtained with full PCA. By contrast, uncentered SVD yields slightly higher accuracy than direct TokenCut at several retained dimensions. Moreover, the relative cosine-graph error resulting from centering alone is substantially higher than that resulting from uncentered SVD, which is consistent with the hypothesis that centering changes the cosine-similarity information used by TokenCut. Under uncentered SVD, accuracy first increases and then decreases as the retained dimension grows. This trend indicates that preserving more information does not necessarily produce higher accuracy; on VOC12, moderate dimensionality reduction may help suppress information that is detrimental to segmentation.
 
