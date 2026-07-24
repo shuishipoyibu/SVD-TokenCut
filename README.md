@@ -47,26 +47,26 @@ Table 1. CorLoc on VOC12 at different retained dimensions (unit: %).
 
 The results show that accuracy after PCA-based dimensionality reduction is substantially lower than that obtained without dimensionality reduction, and that accuracy increases as more dimensions are retained. This finding suggests that full PCA may disrupt information on which TokenCut graph construction depends. One plausible explanation is that centering substantially changes the cosine similarities between tokens, which constitute an important basis for TokenCut segmentation.
 
-Let the original token features be $x_i$ and $x_j$, and let the mean of all tokens be
-$$
+Let the original token features be $`x_i`$ and $`x_j`$, and let the mean of all tokens be
+```math
 \boldsymbol{\mu}=\frac{1}{N}\sum_{i=1}^{N}x_i.
-$$
-After centering, the token feature becomes $\tilde{x}_i=x_i-\boldsymbol{\mu}$. The cosine similarities computed from the original and centered features are, respectively,
-$$
+```
+After centering, the token feature becomes $`\tilde{x}_i=x_i-\boldsymbol{\mu}`$. The cosine similarities computed from the original and centered features are, respectively,
+```math
 c_{ij}=\frac{x_i^{\mathsf T}x_j}{\lVert x_i\rVert_2\lVert x_j\rVert_2},
-$$
+```
 
-$$
+```math
 \tilde{c}_{ij}
 =\frac{(x_i-\boldsymbol{\mu})^{\mathsf T}(x_j-\boldsymbol{\mu})}
 {\lVert x_i-\boldsymbol{\mu}\rVert_2\lVert x_j-\boldsymbol{\mu}\rVert_2}
 =\frac{x_i^{\mathsf T}x_j-\boldsymbol{\mu}^{\mathsf T}x_i-\boldsymbol{\mu}^{\mathsf T}x_j+\lVert\boldsymbol{\mu}\rVert_2^2}
 {\lVert x_i-\boldsymbol{\mu}\rVert_2\lVert x_j-\boldsymbol{\mu}\rVert_2}.
-$$
-Because centering changes both the numerator and the denominator and introduces additional terms such as $-\boldsymbol{\mu}^{\mathsf T}x_i$ and $-\boldsymbol{\mu}^{\mathsf T}x_j$, in general,
-$$
+```
+Because centering changes both the numerator and the denominator and introduces additional terms such as $`-\boldsymbol{\mu}^{\mathsf T}x_i`$ and $`-\boldsymbol{\mu}^{\mathsf T}x_j`$, in general,
+```math
 \tilde{c}_{ij}\neq c_{ij}.
-$$
+```
 Centering is therefore not a cosine-similarity-preserving transformation. When these similarities are used to construct the TokenCut graph, the edge structure of the original graph may change accordingly.
 
 To examine this hypothesis, two experimental conditions are established. In the first, the features are centered without dimensionality reduction before TokenCut is applied. In the second, SVD is applied directly without centering, followed by TokenCut.
